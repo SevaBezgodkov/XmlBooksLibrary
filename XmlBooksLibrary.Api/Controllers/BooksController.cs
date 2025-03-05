@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XmlBooksLibrary.Api.Requests;
 using XmlBooksLibrary.Business.Models;
 using XmlBooksLibrary.Business.Services;
 using XmlBooksLibrary.Business.Services.Interfaces;
@@ -79,17 +80,17 @@ namespace XmlBooksLibrary.Api.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateBookByAuthorAndTitle([FromQuery] string author, [FromQuery] string oldTitle, [FromQuery] string newTitle)
+        [HttpPatch]
+        public async Task<IActionResult> UpdateBookByAuthorAndTitle([FromBody] UpdateBookRequest request)
         {
             try
             {
-                var result = await _service.UpdateBookAsync(author, oldTitle, newTitle);
+                var result = await _service.UpdateBookAsync(request.Author, request.OldTitle, request.NewTitle);
 
                 if (!result)
-                    return NotFound($"Book with title '{oldTitle}' by author '{author}' not found.");
+                    return NotFound($"Book with title '{request.OldTitle}' by author '{request.Author}' not found.");
 
-                return Ok($"Book with title '{oldTitle}' by author '{author}' has been updated.");
+                return Ok($"Book with title '{request.OldTitle}' by author '{request.Author}' has been updated.");
             }
             catch (Exception ex)
             {
